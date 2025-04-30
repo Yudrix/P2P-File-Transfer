@@ -118,7 +118,48 @@ function connect() {
     }
 }
         
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!DONE TILL HERE!!!!!!!!!!!!!!!!!!!!!!!!!!SETUPDATACHANNELLEFT
+        //!! Till here for the day !!!
+        
+        //!! This is the next day gonna start rn !!
+ 
+function setupDataChannel() {
+    dataChannel.onopen = () => {
+        console.log("Data channel is open, you can send files safely.");
+        updateStatus(`Connected to ${remoteId}. Ready to transfer files.`);
+        document.getElementById('sendFileBtn').disabled = false;
+    };
+
+    dataChannel.onclose = () => {
+        updateStatus('File transfer channel closed.');
+        document.getElementById('sendFileBtn').disabled = true;
+    };
+
+    dataChannel.onerror = (error) => {
+        console.error('Data channel error:', error);
+        updateStatus('Error in data connection.', true);
+    };
+
+    dataChannel.onmessage = (event) => {
+        try {
+            if (typeof event.data === 'string') {
+                const metadata = JSON.parse(event.data);
+                fileName = metadata.name || 'received_file';
+                updateStatus(`Receiving: ${fileName}`);
+                return;
+            }
+
+            const blob = new Blob([event.data]);
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = fileName || 'received_file';
+            a.click();
+            updateStatus(`File ${fileName} received successfully!! Let's goo!!`);
+        } catch (error) {
+            console.error('Error in receiving da file:', error);
+            updateStatus('Error in receiving da File.', true);
+        }
+    };
+}        
 
 function setupReceiver() {
     dataChannel.onopen = () => console.log("Connection with Broski established");
