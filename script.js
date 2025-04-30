@@ -1,4 +1,4 @@
-const ws = new WebSocket('ws://localhost:3000');  //Will probably change this to a public server
+const ws = new WebSocket('ws://localhost:3001');  //Will probably change this to a public server
 const localId = Math.random().toString(36).substr(2,6); //I know, very very unique id
 let peerConnection;
 let dataChannel;
