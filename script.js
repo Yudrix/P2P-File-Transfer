@@ -103,7 +103,7 @@ function connect() {
     updateStatus(`Connecting to ${remoteId}...`);
     peerConnection = createPeerConnection();
     dataChannel = peerConnection.createDataChannel("fileTransfer");
-    setupReceiver();
+    setupDataChannel();
 
     peerConnection.createOffer()
         .then(offer => peerConnection.setLocalDescription(offer))
@@ -168,11 +168,11 @@ function sendFile() {
     const file = fileInput.files[0];
 
     if (!file) {
-        alert("Please select a file to send brotha.", true);
+        updateStatus("Please select a file to send brotha.", true);
         return;
     }
 
-    if (!datachannel || dataChannel.readyState !== "open") {
+    if (!dataChannel || dataChannel.readyState !== "open") {
         updateStatus("Connection not made yet, connect first.", true);
         return;
     }
