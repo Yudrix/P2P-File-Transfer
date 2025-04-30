@@ -3,19 +3,35 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>P2P File Transfer</title>
+        <title>Filey!</title>
         <!--<link rel="stylesheet" href="style.css">-->
     </head>
     <body>
         <div class="h1">
-            <h1>P2P File Transfer</h1>
+            <h1>Filey!</h1>
         </div>
-        <div class="input">
-            <input id="peerId" placeholder="Enter Peer ID to connect to a device."/>
+       <div class="container">
+        <h2>Your ID</h2>
+        <p>Share this ID with someone to connect to you:</p>
+        <p class="id-display">Your ID: <span id="localIdDisplay"></span></p>
+       </div>
+
+       <div class="container">
+        <h2>Connect to a Peer</h2>
+        <div>
+            <input id="peerId" placeholder="Enter Peer ID" />
+            <button onclick="connect()">Connect</button>
+        </div>
+        <div id="status">Connecting to signaling server...</div>
+       </div>
+
+       <div class="container">
+        <h2>Send a File</h2>
+        <div>
             <input type="file" id="fileInput" />
-            <button onclick="sendFile()">Send File</button>
-            
+            <button id="sendFileBtn" onclick="sendFile()" disabled>Send File</button>
         </div>
+       </div>
 
         <script src="script.js"></script>
 
