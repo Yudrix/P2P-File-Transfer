@@ -1,5 +1,5 @@
-const ws = new WebSocket('ws://localhost:3000');
-const localId = Math.random().toString(36).substr(2,6);
+const ws = new WebSocket('ws://localhost:3000');  //Will probably change this to a public server
+const localId = Math.random().toString(36).substr(2,6); //I know, very very unique id
 let peerConnection;
 let dataChannel;
 let remoteId;
@@ -159,38 +159,78 @@ function setupDataChannel() {
             updateStatus('Error in receiving da File.', true);
         }
     };
-}        
-
-function setupReceiver() {
-    dataChannel.onopen = () => console.log("Connection with Broski established");
-    dataChannel.onmessage = (event) => {
-        const blob = new Blob([event.data]);
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "received_file";
-        a.click();
-    };
 }
+
+//Replacing old temporary function with sendFile.
 
 function sendFile() {
     const fileInput = document.getElementById("fileInput");
     const file = fileInput.files[0];
 
     if (!file) {
-        alert("Please select a file to send, genius.")
+        alert("Please select a file to send brotha.", true);
         return;
     }
 
-    if (!dataChannel || dataChannel.readyState !== "open") {
-        alert("Connection not established yet. Connect first brotha.")
+    if (!datachannel || dataChannel.readyState !== "open") {
+        updateStatus("Connection not made yet, connect first.", true);
         return;
     }
 
-    const reader = new FileReader();
+    try {
+        dataChannel.send(JSON.stringify({
+            name: file.name,
+            type: file.type,
+            size: file.size
+        }));
 
-    reader.onload = () => {
-        dataChannel.send(reader.result);
-        console.log("File Sent!");
-    };
-    reader.readAsArrayBuffer(file);
+        const reader = new FileReader();
+        reader.onload = () => {
+            updateStatus(`Sending ${file.name}...`);
+            dataChannel.send(reader.result);
+            updateStatus(`File ${file.name} has been sent successfully!!`);
+        };
+        reader.onerror = () => {
+            updateStatus('Error in reading file. Possible that file is to large or unsupported.', true);
+        };
+        reader.readAsArrayBuffer(file);
+    } catch (error) {
+        console.error('Error in sending file:', error);
+        updateStatus('Error in sending file.', true);
+    }
 }
+//COMMENTING IT FOR NOW
+
+//function setupReceiver() {
+    //dataChannel.onopen = () => console.log("Connection with Broski established");
+    //dataChannel.onmessage = (event) => {
+      //  const blob = new Blob([event.data]);
+        //const a = document.createElement("a");
+        //a.href = URL.createObjectURL(blob);
+        //a.download = "received_file";
+        //a.click();
+    //};
+//}
+
+//function sendFile() {
+    //const fileInput = document.getElementById("fileInput");
+    //const file = fileInput.files[0];
+
+    //if (!file) {
+      //  alert("Please select a file to send, genius.")
+     //   return;
+   // }
+
+   // if (!dataChannel || dataChannel.readyState !== "open") {
+       // alert("Connection not established yet. Connect first brotha.")
+      //  return;
+    //}
+
+   // const reader = new FileReader();
+
+   // reader.onload = () => {
+       // dataChannel.send(reader.result);
+      //  console.log("File Sent!");
+   // };
+   // reader.readAsArrayBuffer(file);
+//}
